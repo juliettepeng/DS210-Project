@@ -58,7 +58,6 @@ fn main() {
     
     for i in 0..adj.len() {
         println!("Distance from node {}", i);
-        //let distances = bfs(&adj, i);
         let distances = bfs(&adj, i);
         for (node, dist) in distances.iter().enumerate() {
             if let Some(d) = dist {
