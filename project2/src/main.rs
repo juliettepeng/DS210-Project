@@ -3,7 +3,7 @@ use std::io::{self, BufRead};
 use std::collections::HashSet;
 use std::collections::HashMap;
 mod stats;
-use stats::{mean_distance, bfs, std_dev}; 
+use stats::{mean_distance, bfs, std_dev, max_distance};
 
 fn read_file(path: &str) -> Vec<(usize, usize)> {
     let points = File::open(path).expect("Could not open file");
@@ -84,47 +84,62 @@ println!("Mean Distance: {}", mean_dist);
 let sd = stats::std_dev(&distances, mean_dist);
 println!("Standard Deviation: {}", sd);
 
-test_bfs_zeros();
+let m_dist = stats::max_distance(&distances);
+println!("Max Distance: {}", m_dist);
     
 }
 
-fn test_adjacency_list(graph: &Vec<(usize,usize)>, unique_nodes: HashSet<usize>) -> Vec<Vec<usize>> {
-    let new_num = unique_nodes.len();
-    let new_vec: Vec<&usize> = unique_nodes.iter().collect();
-    let mut adj: Vec<Vec<usize>> = vec![vec![];new_num];
-    let mut node_map: HashMap<usize, usize> = HashMap::new();
-    for (i, j) in new_vec.iter().enumerate(){
-        node_map.insert(**j,i);
-    }
-    for (source, destination) in graph {
-        adj[node_map[&source]].push(node_map[&destination]);
-    }
-    adj
-}
-
-fn test_bfs_zeros() -> i32{
+#[test]
+fn test_bfs_zeros() {
     let file = "test.txt";
     let graph = read_file(file);
     let unique_nodes = unique_nodes(&graph);
-    let test_adj = test_adjacency_list(&graph, unique_nodes.clone());
+    let test_adj = adjacency_list(&graph,unique_nodes.clone());
 
-    let mut passed = true;
-
-    for (i,node) in unique_nodes.iter().enumerate(){
+    for (i, node) in unique_nodes.iter().enumerate() {
         let distances = bfs(&test_adj, i);
-        if distances[i] != Some(0) {
-            println!("Node {}: Expected 0, Got {:?}", node, distances[i]);
-            passed = false;
-        } else {
-            println!("Distance from node {}", i);
-            println!("To {}: {}", i, 0);
-        }
-     }
-     if passed {
-        println!("All nodes passed!");
-        0
-     }  else {
-        println!("Some nodes failed.");
-        1
-     }
+        assert_eq!(distances[i], Some(0), "Node {}: Expected 0, Got {:?}", node, distances[i]);
+    }
+
+    println!("All nodes passed in test!");
 }
+
+#[test]
+fn test_max_distance() {
+    let file = "test.txt";
+    let graph = read_file(file);
+    let unique_nodes = unique_nodes(&graph);
+    let test_adj = adjacency_list(&graph,unique_nodes.clone());
+    
+    let distances: Vec<Vec<Option<usize>>> = (0..unique_nodes.len())
+        .map(|i| bfs(&test_adj, i))
+        .collect();
+
+    let max_dist = stats::max_distance(&distances);
+    assert_eq!(max_dist, 3); 
+}
+
+/*#[test]
+fn test_connections() {
+    let file = "test.txt";
+    let graph = read_file(file);
+    let unique_nodes = unique_nodes(&graph);
+    let test_adj = adjacency_list(&graph, unique_nodes.clone());
+
+    let distances = bfs(&test_adj, 0);
+    let mut new_distances = vec![None; unique_nodes.len()];
+    for (node, &dist) in distances.iter().enumerate() {
+        new_distances[node] = dist;
+    }
+
+    println!("Distances from node 0:");
+    for (node, dist) in new_distances.iter().enumerate() {
+        println!("To {}: {:?}", node, dist);
+    }
+
+    let expected_output: Vec<Option<usize>> = vec![
+        Some(0), Some(1), Some(1), Some(2), Some(2), Some(3), Some(3)
+    ];
+
+    assert_eq!(new_distances, expected_output);
+}*/

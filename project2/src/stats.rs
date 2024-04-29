@@ -58,3 +58,18 @@ pub fn std_dev(distances: &[Vec<Option<usize>>], mean_distance: f64) -> f64 {
         0.0
     }
 }
+
+pub fn max_distance(distances: &[Vec<Option<usize>>]) -> usize {
+    let mut max_dist = 0;
+
+    for distance in distances {
+        for d in distance {
+            if let Some(dist) = d {
+                if *dist > max_dist {
+                    max_dist = *dist;
+                }
+            }
+        }
+    }
+    max_dist
+}
