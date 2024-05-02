@@ -3,8 +3,9 @@ use std::io::{self, BufRead};
 use std::collections::HashSet;
 use std::collections::HashMap;
 mod stats;
-use stats::{mean_distance, bfs, std_dev, max_distance};
+use stats::bfs; //importing the bfs function from the stats module
 
+//function that will read the file & return a vector of tuples representing graph edges
 fn read_file(path: &str) -> Vec<(usize, usize)> {
     let points = File::open(path).expect("Could not open file");
     let lines = io::BufReader::new(points).lines();
@@ -12,7 +13,7 @@ fn read_file(path: &str) -> Vec<(usize, usize)> {
 
     for line in lines {
         let string = line.expect("Error reading line");
-        let parts: Vec<&str> = string.trim().split(',').collect(); // Split by comma
+        let parts: Vec<&str> = string.trim().split(',').collect(); // split by comma, both my datasets are split by commas
         if parts.len() == 2 {
             if let Ok(x) = parts[0].parse::<usize>() {
                 if let Ok(y) = parts[1].parse::<usize>() {
@@ -24,6 +25,7 @@ fn read_file(path: &str) -> Vec<(usize, usize)> {
     return graph;
 }
 
+//finding unique nodes in the graph
 fn unique_nodes(graph: &Vec<(usize, usize)>) -> HashSet<usize> {
     let mut hash_set: HashSet<usize> = HashSet::new();
     for (i, j) in graph.iter() {
@@ -33,6 +35,7 @@ fn unique_nodes(graph: &Vec<(usize, usize)>) -> HashSet<usize> {
     return hash_set;
 }
 
+//convert graph to adjacency list representation
 fn adjacency_list(graph: &Vec<(usize,usize)>, hash_set: HashSet<usize>) -> Vec<Vec<usize>> {
     let new_num = hash_set.len();
     let new_vec: Vec<&usize> = hash_set.iter().collect();
@@ -56,6 +59,7 @@ fn main() {
     let adj = adjacency_list(&graph, unique_graph);
     println!("Length of graph: {}", graph.len());
     
+    //calculate distances from each node using BFS
     for i in 0..adj.len() {
         println!("Distance from node {}", i);
         let distances = bfs(&adj, i);
@@ -66,6 +70,7 @@ fn main() {
         }
     }
    
+    //calculate mean distance, standard deviation, & max distance
     let mut distances: Vec<Vec<Option<usize>>> = Vec::new();
     for i in 0..adj.len() {
     println!("Distance from node {}", i);

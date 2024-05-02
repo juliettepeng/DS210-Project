@@ -1,7 +1,8 @@
 use std::collections::VecDeque;
 
+//BFS algorithm to calculate distances from a starting node to all other nodes in the graph
 pub fn bfs(graph: &Vec<Vec<usize>>, start: usize) -> Vec<Option<usize>> {
-    let mut distance: Vec<Option<usize>> = vec![None; graph.len()];
+    let mut distance: Vec<Option<usize>> = vec![None; graph.len()]; //initialize distances with None
     let mut queue: VecDeque<usize> = VecDeque::new();
     queue.push_back(start);
     distance[start] = Some(0);
@@ -17,6 +18,7 @@ pub fn bfs(graph: &Vec<Vec<usize>>, start: usize) -> Vec<Option<usize>> {
     distance
 }
 
+//function to calculate the mean distance of all the distances calculated from BFS
 pub fn mean_distance(distances: &[Vec<Option<usize>>]) -> f64 {
     let mut total_distance = 0;
     let mut total_nodes = 0;
@@ -37,6 +39,7 @@ pub fn mean_distance(distances: &[Vec<Option<usize>>]) -> f64 {
     }
 }
 
+//function that utilizes the mean_distance result to calculate the standard deviation of distances
 pub fn std_dev(distances: &[Vec<Option<usize>>], mean_distance: f64) -> f64 {
     let mut sum_squared_diff = 0.0;
     let mut total_nodes = 0;
@@ -59,6 +62,7 @@ pub fn std_dev(distances: &[Vec<Option<usize>>], mean_distance: f64) -> f64 {
     }
 }
 
+//function that finds the maximum distance of all distances between any two nodes
 pub fn max_distance(distances: &[Vec<Option<usize>>]) -> usize {
     let mut max_dist = 0;
 
