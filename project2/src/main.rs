@@ -118,28 +118,3 @@ fn test_max_distance() {
     let max_dist = stats::max_distance(&distances);
     assert_eq!(max_dist, 3); 
 }
-
-/*#[test]
-fn test_connections() {
-    let file = "test.txt";
-    let graph = read_file(file);
-    let unique_nodes = unique_nodes(&graph);
-    let test_adj = adjacency_list(&graph, unique_nodes.clone());
-
-    let distances = bfs(&test_adj, 0);
-    let mut new_distances = vec![None; unique_nodes.len()];
-    for (node, &dist) in distances.iter().enumerate() {
-        new_distances[node] = dist;
-    }
-
-    println!("Distances from node 0:");
-    for (node, dist) in new_distances.iter().enumerate() {
-        println!("To {}: {:?}", node, dist);
-    }
-
-    let expected_output: Vec<Option<usize>> = vec![
-        Some(0), Some(1), Some(1), Some(2), Some(2), Some(3), Some(3)
-    ];
-
-    assert_eq!(new_distances, expected_output);
-}*/
